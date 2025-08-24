@@ -1,5 +1,6 @@
+// src/middlewares/validate.ts
 import type { ZodTypeAny } from "zod";
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 
 export const validate = (schema: ZodTypeAny) =>
   (req: Request, res: Response, next: NextFunction) => {
@@ -11,16 +12,14 @@ export const validate = (schema: ZodTypeAny) =>
     });
 
     if (!parsed.success) {
-      // no Zod v4, error.flatten() continua disponível
+      const err: any = parsed.error;
       return res.status(400).json({
         error: "ValidationError",
-        details: parsed.error.flatten ? parsed.error.flatten() : parsed.error,
+        details: typeof err.flatten === "function" ? err.flatten() : err,
       });
     }
 
-    const data = parsed.data as any;
-    if (data?.body)   req.body = data.body;
-    if (data?.query)  req.query = data.query;
-    if (data?.params) req.params = data.params;
+    
+    res.locals.validated = parsed.data; // { body?, query?, params?, headers? }
     next();
   };
