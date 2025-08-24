@@ -1,0 +1,82 @@
+/*  Base  */
+* { box-sizing: border-box; }
+:root { --border: #ddd; --muted: #666; --primary: #2563eb; --error: #b91c1c; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: #fff;
+  color: #111;
+}
+
+/* página de login*/
+.loginpage {
+  max-width: 420px;
+  margin: 64px auto;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.loginpage__title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+/* Formulário  */
+.loginpage__form {
+  display: grid;
+  gap: 12px;
+}
+
+.field { display: block; }
+.field__label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.field__input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  background: #fff;
+  color: inherit;
+}
+.field__input:focus {
+  border-color: #888;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Erro do formulário */
+.form__error {
+  color: var(--error);
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+
+/* Botão */
+.btn {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 0;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter .15s ease, opacity .15s ease;
+}
+.btn:hover { filter: brightness(1.05); }
+.btn:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+/* Dica abaixo do formulário */
+.loginpage__hint {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
