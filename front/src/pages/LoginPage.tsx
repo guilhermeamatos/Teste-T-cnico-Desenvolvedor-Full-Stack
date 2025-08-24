@@ -63,6 +63,9 @@ export default function LoginPage() {
         <button className="btn" disabled={loading}>
           {loading ? "Entrando..." : "Entrar"}
         </button>
+        <p className="loginpage__hint">
+          Não tem uma conta? <a href="/register">Cadastre-se</a>
+        </p>
       </form>
     </div>
   );
