@@ -6,3 +6,14 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Usuario {
+  id           String   @id @default(uuid()) @db.Char(36) 
+  nome         String
+  email        String   @unique
+  senha        String
+  data_criacao DateTime @default(now())
+
+  @@map("usuarios")
+  @@index([nome], map: "idx_usuarios_nome")
+}

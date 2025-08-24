@@ -1,10 +1,14 @@
+// src/env.ts
 import "dotenv/config";
 
-const required = ["DATABASE_URL", "JWT_SECRET", "PORT"] as const;
-for (const key of required) if (!process.env[key]) throw new Error(`Env faltando: ${key}`);
+function required(name: string, value: string | undefined): string {
+  if (!value) throw new Error(`Missing env ${name}`);
+  return value;
+}
 
 export const env = {
-  DATABASE_URL: process.env.DATABASE_URL!,
-  JWT_SECRET: process.env.JWT_SECRET!,
-  PORT: Number(process.env.PORT || 3000),
-};
+  NODE_ENV: process.env.NODE_ENV ?? "development",
+  PORT: Number(process.env.PORT) || 3000,
+  JWT_SECRET: required("JWT_SECRET", process.env.JWT_SECRET),      
+  DATABASE_URL: required("DATABASE_URL", process.env.DATABASE_URL) 
+} as const;
