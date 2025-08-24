@@ -1,0 +1,11 @@
+
+CREATE DATABASE IF NOT EXISTS teste_vaga
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_0900_ai_ci;
+
+
+CREATE USER IF NOT EXISTS 'app'@'%' IDENTIFIED BY 'app_password';
+
+
+GRANT ALL PRIVILEGES ON *.* TO 'app'@'%';
+FLUSH PRIVILEGES;
