@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { loginApi } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 import "../styles/LoginPage.css"; 
 
 export default function LoginPage() {
@@ -8,6 +9,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
+  const navigate = useNavigate();
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErr(null);
@@ -16,7 +18,7 @@ export default function LoginPage() {
     try {
       const { token } = await loginApi({ email, senha });
       localStorage.setItem("token", token);
-      alert("Login ok!");
+      navigate("/users");
     } catch (e: any) {
       if (e?.response) {
         if (e.response.status === 401) {

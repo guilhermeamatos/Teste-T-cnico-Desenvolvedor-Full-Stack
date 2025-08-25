@@ -17,3 +17,16 @@ export async function createUser(data: CreateUserDTO): Promise<UserView> {
   const res = await http.post<UserView>("/users", data);
   return res.data;
 }
+
+export type PaginatedUsers = {
+  data: UserView[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};
+
+export async function listUsers(params?: { page?: number; limit?: number }) {
+  const res = await http.get<PaginatedUsers>("/users", { params });
+  return res.data;
+}

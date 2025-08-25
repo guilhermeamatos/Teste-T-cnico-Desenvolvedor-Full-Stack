@@ -1,0 +1,67 @@
+.userspage {
+  max-width: 960px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+.userspage__title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.userspage__card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.table__wrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table thead th {
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  padding: 10px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+.table tbody td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.pagination .btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 0;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+}
+.pagination .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pagination__info {
+  font-size: 14px;
+  color: #374151;
+}
+
+/* Reutiliza classes globais caso já existam em outras páginas: */
+.form__error { color: #b91c1c; font-size: 12px; }
