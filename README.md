@@ -209,7 +209,7 @@ Essa divisão é adequada para **projetos pequenos e médios**, pois mantém cla
 - Exemplo:
   ```ts
   router.get("/users", authMiddleware, usersController.list);
- ```
+ ```ts
  Para proteger qualquer outra rota, basta aplicar o mesmo middleware na definição de rota.
 
 Esse padrão garante escalabilidade: a lógica de validação do token fica centralizada em um ponto.
