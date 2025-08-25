@@ -26,7 +26,7 @@ export type PaginatedUsers = {
   totalPages: number;
 };
 
-export async function listUsers(params?: { page?: number; limit?: number }) {
+export async function listUsers(params?: { page?: number; limit?: number; nome?: string }) {
   const res = await http.get<PaginatedUsers>("/users", { params });
   return res.data;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { listUsers } from "../api/users";
 import type { UserView } from "../api/users";
 import "../styles/UsersListPage.css";
@@ -6,16 +6,26 @@ import "../styles/UsersListPage.css";
 export default function UsersListPage() {
   const [users, setUsers] = useState<UserView[]>([]);
   const [page, setPage] = useState(1);
-  const limit = 10; // 10 em 10
+  const limit = 10;
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
+
+
+  const [nome, setNome] = useState("");
+
+  const debouncedNome = useDebounce(nome, 300);
 
   async function load() {
     setLoading(true);
     setErr(null);
     try {
-      const res = await listUsers({ page, limit });
+      const res = await listUsers({
+        page,
+        limit,
+        // envia só se tiver algo digitado
+        nome: debouncedNome?.trim() ? debouncedNome.trim() : undefined,
+      });
       setUsers(res.data);
       setTotalPages(res.totalPages);
     } catch (e: any) {
@@ -29,23 +39,59 @@ export default function UsersListPage() {
     }
   }
 
+
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+    
+  }, [page, debouncedNome]);
 
-  function prev() { setPage((p) => Math.max(1, p - 1)); }
-  function next() { setPage((p) => Math.min(totalPages, p + 1)); }
+  function prev() {
+    setPage((p) => Math.max(1, p - 1));
+  }
+  function next() {
+    setPage((p) => Math.min(totalPages, p + 1));
+  }
+
+  
+  function onChangeNome(v: string) {
+    setNome(v);
+    setPage(1);
+  }
 
   const formatDateTime = (iso: string) =>
     new Date(iso).toLocaleString("pt-BR", {
-      day: "2-digit", month: "2-digit", year: "numeric",
-      hour: "2-digit", minute: "2-digit"
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
 
   return (
     <div className="userspage">
       <h1 className="userspage__title">Usuários</h1>
+
+      {/* 🔎 Filtros */}
+      <div className="userspage__filters">
+        <input
+          className="input"
+          type="text"
+          placeholder="Pesquisar por nome"
+          value={nome}
+          onChange={(e) => onChangeNome(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") load(); // Enter força busca imediata
+          }}
+        />
+        <button
+          className="btn btn--muted"
+          type="button"
+          onClick={() => onChangeNome("")}
+          disabled={!nome}
+        >
+          Limpar
+        </button>
+      </div>
 
       <div className="userspage__card">
         {loading ? (
@@ -81,7 +127,9 @@ export default function UsersListPage() {
           <button className="btn" onClick={prev} disabled={page <= 1}>
             Anterior
           </button>
-          <span className="pagination__info">Página {page} de {totalPages}</span>
+          <span className="pagination__info">
+            Página {page} de {totalPages}
+          </span>
           <button className="btn" onClick={next} disabled={page >= totalPages}>
             Próxima
           </button>
@@ -89,4 +137,13 @@ export default function UsersListPage() {
       </div>
     </div>
   );
+}
+
+function useDebounce<T>(value: T, delay = 300) {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(id);
+  }, [value, delay]);
+  return debounced;
 }
