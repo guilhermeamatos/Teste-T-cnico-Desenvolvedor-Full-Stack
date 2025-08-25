@@ -1,7 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { listUsers } from "../api/users";
 import type { UserView } from "../api/users";
+import Modal from "../components/Modal";
+import RegisterForm from "../components/RegisterForm";
 import "../styles/UsersListPage.css";
+import "../styles/modal.css";
 
 export default function UsersListPage() {
   const [users, setUsers] = useState<UserView[]>([]);
@@ -10,11 +14,10 @@ export default function UsersListPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
-
-
   const [nome, setNome] = useState("");
-
   const debouncedNome = useDebounce(nome, 300);
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   async function load() {
     setLoading(true);
@@ -23,7 +26,6 @@ export default function UsersListPage() {
       const res = await listUsers({
         page,
         limit,
-        // envia só se tiver algo digitado
         nome: debouncedNome?.trim() ? debouncedNome.trim() : undefined,
       });
       setUsers(res.data);
@@ -39,10 +41,8 @@ export default function UsersListPage() {
     }
   }
 
-
   useEffect(() => {
     load();
-    
   }, [page, debouncedNome]);
 
   function prev() {
@@ -52,10 +52,14 @@ export default function UsersListPage() {
     setPage((p) => Math.min(totalPages, p + 1));
   }
 
-  
   function onChangeNome(v: string) {
     setNome(v);
     setPage(1);
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    navigate("/");
   }
 
   const formatDateTime = (iso: string) =>
@@ -69,9 +73,21 @@ export default function UsersListPage() {
 
   return (
     <div className="userspage">
-      <h1 className="userspage__title">Usuários</h1>
+      <div
+        className="userspage__header"
+        style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
+      >
+        <h1 className="userspage__title">Usuários</h1>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button className="btn" type="button" onClick={() => setIsOpen(true)}>
+            Novo usuário
+          </button>
+          <button className="btn btn--muted" type="button" onClick={logout}>
+            Sair
+          </button>
+        </div>
+      </div>
 
-      {/* 🔎 Filtros */}
       <div className="userspage__filters">
         <input
           className="input"
@@ -80,7 +96,7 @@ export default function UsersListPage() {
           value={nome}
           onChange={(e) => onChangeNome(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") load(); // Enter força busca imediata
+            if (e.key === "Enter") load();
           }}
         />
         <button
@@ -135,6 +151,15 @@ export default function UsersListPage() {
           </button>
         </div>
       </div>
+
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Cadastrar usuário">
+        <RegisterForm
+          onSuccess={() => {
+            setIsOpen(false);
+            load();
+          }}
+        />
+      </Modal>
     </div>
   );
 }
