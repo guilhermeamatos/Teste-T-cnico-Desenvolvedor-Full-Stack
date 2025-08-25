@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { loginApi } from "../api/auth";
+import { useState, useEffect } from "react";
+import { loginApi, validateToken } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import "../styles/LoginPage.css"; 
 
@@ -10,6 +10,17 @@ export default function LoginPage() {
   const [err, setErr] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    async function checkToken() {
+      const isValid = await validateToken();
+      if (isValid) {
+        navigate("/users"); // já redireciona
+      }
+    }
+    checkToken();
+  }, [navigate]);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErr(null);
@@ -65,6 +76,7 @@ export default function LoginPage() {
         <button className="btn" disabled={loading}>
           {loading ? "Entrando..." : "Entrar"}
         </button>
+
         <p className="loginpage__hint">
           Não tem uma conta? <a href="/register">Cadastre-se</a>
         </p>
