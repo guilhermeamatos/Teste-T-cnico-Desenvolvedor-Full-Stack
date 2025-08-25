@@ -87,3 +87,76 @@
     ├── tsconfig.node.json
     └── vite.config.ts
 ```
+
+---
+
+## ⚙️ Pré-requisitos
+
+- Docker e Docker Compose instalados.  
+- Node.js 18+ e npm.  
+
+---
+
+## 🐳 Subir Banco de Dados + Adminer
+
+Dentro da pasta `BD/`, execute:
+
+```bash
+docker compose up -d
+```
+Isso irá subir:
+
+MySQL acessível em localhost:3306.
+
+Adminer acessível em http://localhost:8080.
+
+🔑 Variáveis de Ambiente
+
+Crie um arquivo .env na pasta back/ com o seguinte conteúdo:
+```
+DATABASE_URL="mysql://app:app_password@127.0.0.1:3306/teste_vaga"
+JWT_SECRET="rhallycd"
+PORT=3000
+```
+Crie também um arquivo .env na pasta front/ com:
+```
+VITE_API_URL=http://localhost:3000
+```
+▶️ Rodando o Back-end
+```
+cd back
+npm install
+npx prisma generete
+npx prisma migrate dev      # aplica migrations no banco
+npm run dev                 # sobe servidor em http://localhost:3000
+```
+
+▶️ Rodando o Front-end
+```
+cd front
+npm install
+npm run dev
+```
+A aplicação ficará disponível em:
+👉 http://localhost:5173
+
+## 🗄️ Scripts SQL Demonstrativos
+
+Por um motivo de **facilitar a implementação da paginação e manter o schema versionado**, foi preferido utilizar o **Prisma ORM** ao invés de depender das tabelas criadas manualmente.  
+
+Ainda assim, para cumprir os requisitos do teste técnico e demonstrar conhecimento em SQL, foram criados alguns scripts manuais.  
+
+Eles estão localizados em **BD/scripts/**:
+
+- **create_usuarios_demo.sql** → Criação da tabela `usuarios` e exemplo de normalização com papéis.  
+- **consultas_demo.sql** → Query para listar os 5 usuários mais recentes.  
+- **populate_usuarios_demo.sql** → Inserção de 20 registros falsos para testes.  
+
+### Como executar via Adminer
+
+1. Acesse [http://localhost:8080](http://localhost:8080).  
+2. Faça login com usuário `root` e senha `root123`.  
+3. **Crie um banco de dados novo** (ex.: `playgrounddb`) para não interferir no banco usado pelo Prisma (`teste_vaga`).  
+4. Selecione o banco criado (`playgrounddb`).  
+5. Vá em **Importar** ou **Comando SQL** e rode os scripts desejados.  
+
